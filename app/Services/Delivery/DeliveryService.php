@@ -108,7 +108,7 @@ class DeliveryService
         $packageArray['companies'][$resultDto
             ->getTransportCompanyName()]['slowDelivery'] =
             $slowDeliveryArray;
-        
+
         $packageArray['companies'][$resultDto->getTransportCompanyName()]['isCompanyPicked']
             = $resultDto->isCompanyPicked();
 

@@ -17,5 +17,3 @@ use \App\Http\Controllers\DeliveryController;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/deliveries', [DeliveryController::class, 'index']);
