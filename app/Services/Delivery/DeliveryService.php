@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services\Delivery;
 
@@ -64,8 +65,8 @@ class DeliveryService
         $packageDto = new PackageDto();
         $packageDto->setSourceKladr($item['sourceKladr']);
         $packageDto->setTargetKladr($item['targetKladr']);
-        $packageDto->setWeight($item['weight']);
-        $packageDto->setPickedTransportCompanyId($item['pickedTransportCompanyId']);
+        $packageDto->setWeight((float)$item['weight']);
+        $packageDto->setPickedTransportCompanyId((int)$item['pickedTransportCompanyId']);
         return $packageDto;
     }
 
