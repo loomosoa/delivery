@@ -36,6 +36,7 @@ class DeliveryService
 
         try {
             foreach ($this->packagesDto as $packageDto) {
+                $results = [];
                 foreach ($this->transportCompanies as $companyClass) {
                     $resultDto = new ResultDto();
                     $resultDto->setPackageDto($packageDto);
@@ -45,10 +46,9 @@ class DeliveryService
                      */
                     $company = new $companyClass();
                     $company->calculate($resultDto);
-                    $this->resultDto[] = $resultDto;
+                    $results[] = $resultDto;
                 }
-                $this->packageCalculations[] = $this->resultDto;
-                $this->resultDto = [];
+                $this->packageCalculations[] = $results;
             }
         }catch (\Throwable $e) {
             Log::debug($e->getMessage());
