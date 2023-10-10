@@ -15,6 +15,8 @@ abstract class BaseDeliveryAdapter
 
     protected string $transportCompanyName = "";
 
+    const DELIVERY_APPLICATION_ACCEPTANCE_CLOSE_HOUR = 18;
+
     public function calculate(ResultDto $resultDto)
     {
         $fastDeliveryDto = $this->calculateFastDelivery($resultDto->getPackageDto());
@@ -33,7 +35,7 @@ abstract class BaseDeliveryAdapter
     protected function initFastDeliveryDto(FastDeliveryDto $fastDeliveryDto,
                                            ApiResponseDto $apiResponseDto)
     {
-        $fastDeliveryDto->setPrice((float)$apiResponseDto->getPrice());
+        $fastDeliveryDto->setPrice($apiResponseDto->getPrice());
         $fastDeliveryDto->setPeriod($apiResponseDto->getDeliveryPeriod());
         $fastDeliveryDto->setDate($apiResponseDto->getDeliveryDate());
         $fastDeliveryDto->setError($apiResponseDto->getError());
@@ -52,8 +54,15 @@ abstract class BaseDeliveryAdapter
                                                   $apiResponseDto)
     {
         $apiResponseDto->setError("");
-        $apiResponseDto->setPrice(mt_rand(400,999));
-        $apiResponseDto->setDeliveryPeriod(mt_rand(1,9));
+        $apiResponseDto->setPrice((float)mt_rand(400,1500));
+
+        $additionalDay = 0;
+        $currentHour = (int)date("H");
+        if ($currentHour >= self::DELIVERY_APPLICATION_ACCEPTANCE_CLOSE_HOUR) {
+            $additionalDay = 1;
+        }
+
+        $apiResponseDto->setDeliveryPeriod(mt_rand(1,3) + $additionalDay);
         $apiResponseDto->setDeliveryDate(Carbon::now()
             ->addDays($apiResponseDto->getDeliveryPeriod())
             ->format("Y-m-d"));
@@ -63,7 +72,7 @@ abstract class BaseDeliveryAdapter
                                                   $apiResponseDto)
     {
         $apiResponseDto->setError("");
-        $apiResponseDto->setDeliveryPeriod(mt_rand(1,9));
+        $apiResponseDto->setDeliveryPeriod(mt_rand(4,9));
         $apiResponseDto->setDeliveryDate(Carbon::now()
             ->addDays($apiResponseDto->getDeliveryPeriod())
             ->format("Y-m-d"));
