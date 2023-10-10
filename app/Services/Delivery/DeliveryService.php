@@ -3,37 +3,61 @@
 namespace App\Services\Delivery;
 
 use App\Services\Delivery\Abstracts\BaseDeliveryAdapter;
-use App\Services\Delivery\Interfaces\DeliveryInterface;
+use App\Services\Delivery\Interfaces\TransportCompanyInterface;
+use Illuminate\Support\Facades\Log;
 
-class DeliveryService extends BaseDeliveryAdapter implements DeliveryInterface
+class DeliveryService
 {
 
     protected array $data;
 
+    protected array $packagesDto = [];
+
+    protected array $resultDto = [];
+
     protected array $transportCompanies = [
         SDEKAdapter::class,
-        ExpressAdapter::class,
-        BoxberryAdapter::class,
-        DHLAdpater::class,
+//        ExpressAdapter::class,
+//        BoxberryAdapter::class,
+//        DHLAdpater::class,
     ];
 
 
-    public function calculateFastDelivery()
-    {
-        // TODO: Implement calculateFastDelivery() method.
-    }
-
-    public function calculateSlowDelivery()
-    {
-        // TODO: Implement calculateSlowDelivery() method.
-    }
-
     public function calculate(): array
     {
+        foreach ($this->data as $item) {
+            $packageDto = new PackageDto();
+            $packageDto->setSourceKladr($item['sourceKladr']);
+            $packageDto->setTargetKladr($item['targetKladr']);
+            $packageDto->setWeight($item['weight']);
+            $packageDto->setPickedTransportCompanyId($item['pickedTransportCompanyId']);
+
+            $this->packagesDto[] = $packageDto;
+        }
+
+        try {
+            foreach ($this->packagesDto as $packageDto) {
+                foreach ($this->transportCompanies as $companyClass) {
+                    $resultDto = new ResultDto();
+                    $resultDto->setPackageDto($packageDto);
+
+                    /**
+                     * @var TransportCompanyInterface $company
+                     */
+                    $company = new $companyClass();
+                    $company->calculate($resultDto);
+                    $this->resultDto[] = $resultDto;
+                }
+            }
+        }catch (\Throwable $e) {
+            Log::debug($e->getMessage());
+        }
+
+
         $some = 1;
         /*
-         * приходят посылки,
-         * для каждой необходимо определить стоимость доставки
+         * v приходят посылки,
+         * для каждой необходимо определить стоимость и время доставки
          * всеми транспортными компаниями
          *
          * в рамках быстрой и медленной доставки
