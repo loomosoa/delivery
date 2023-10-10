@@ -234,8 +234,7 @@ class DeliveryController extends Controller
      */
     public function index()
     {
-        $deliveries = Delivery::all();
-        return $deliveries;
+
     }
 
     /**

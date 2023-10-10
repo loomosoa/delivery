@@ -22,4 +22,3 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/deliveries', [DeliveryController::class, 'calculate']);
 
-Route::get('/deliveries', [DeliveryController::class, 'index']);
