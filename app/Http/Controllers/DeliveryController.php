@@ -8,14 +8,6 @@ use Illuminate\Http\Request;
 
 class DeliveryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $deliveries = Delivery::all();
-        return $deliveries;
-    }
 
     /*
      * #########
@@ -235,6 +227,15 @@ class DeliveryController extends Controller
 
         $results = $deliverService->calculate();
         return response()->json($results);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $deliveries = Delivery::all();
+        return $deliveries;
     }
 
     /**
