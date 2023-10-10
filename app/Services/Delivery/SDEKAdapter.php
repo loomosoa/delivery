@@ -13,37 +13,23 @@ class SDEKAdapter extends BaseDeliveryAdapter implements TransportCompanyInterfa
 
     protected int $transportCompanyId = 1;
 
+    protected string $transportCompanyName = "SDEK";
+
     public function calculateFastDelivery(PackageDto $dto): FastDeliveryDto
     {
-        $kladrFrom = $dto->getSourceKladr();
-        $kladrTo = $dto->getTargetKladr();
-        $weight = $dto->getWeight();
-
-
-        // request SDEK API with $kladrFrom, $kladrTo, $weight
-
         try {
-            $apiResponse = new \StdClass();
-            $apiResponse->error = "";
-
             $fastDeliveryDto = new FastDeliveryDto();
+            $apiResponse = new ApiResponseDto();
 
-            if ($apiResponse->error === "") {
-                $apiResponse->price = mt_rand(400,999);
-                $apiResponse->deliveryPeriod = mt_rand(1,9);
-                $apiResponse->deliveryDate = Carbon::now()
-                    ->addDays($apiResponse->deliveryPeriod)
-                    ->format("Y-m-d");
+            // request SDEK API with $dto->getSourceKladr(),
+            // $dto->getTargetKladr(), $dto->getWeight()
 
-                $fastDeliveryDto->setPrice((float)$apiResponse->price);
-                $fastDeliveryDto->setPeriod($apiResponse->deliveryPeriod);
-                $fastDeliveryDto->setDate($apiResponse->deliveryDate);
-            } else {
-                $fastDeliveryDto->setError($apiResponse->error);
-            }
+            $this->initFakeApiFastDeliveryResponseDto($apiResponse);
+            $this->initFastDeliveryDto($fastDeliveryDto, $apiResponse);
 
         }catch (\Throwable $e) {
             Log::error($e->getMessage());
+            $fastDeliveryDto->setError($apiResponse->getError());
         }
 
         return $fastDeliveryDto;
@@ -51,20 +37,24 @@ class SDEKAdapter extends BaseDeliveryAdapter implements TransportCompanyInterfa
 
     public function calculateSlowDelivery(PackageDto $dto): SlowDeliveryDto
     {
-        // TODO: Implement calculateSlowDelivery() method.
-    }
+        try {
+            $slowDeliveryDto = new SlowDeliveryDto();
+            $apiResponse = new ApiResponseDto();
 
-    public function calculate(ResultDto $resultDto)
-    {
-        $fastDeliveryDto = $this->calculateFastDelivery($resultDto->getPackageDto());
-        $slowDeliveryDto = $this->calculateSlowDelivery($resultDto->getPackageDto());
+            // request SDEK API with $dto->getSourceKladr(),
+            // $dto->getTargetKladr(), $dto->getWeight()
 
-        $resultDto->setFastDeliveryDto($fastDeliveryDto);
-        $resultDto->setSlowDeliveryDto($slowDeliveryDto);
+            $apiResponse->setCoefficient(1.5);
+            $this->initFakeApiSlowDeliveryResponseDto($apiResponse);
+            $this->initSlowDeliveryDto($slowDeliveryDto, $apiResponse);
 
-        if ($this->transportCompanyId === $resultDto->getPackageDto()
-                ->getPickedTransportCompanyId()) {
-            $resultDto->setIsCompanyPicked(true);
+        }catch (\Throwable $e) {
+            Log::error($e->getMessage());
+            $slowDeliveryDto->setError($apiResponse->getError());
         }
+
+        return $slowDeliveryDto;
     }
+
+
 }

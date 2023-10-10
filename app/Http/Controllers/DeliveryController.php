@@ -41,12 +41,13 @@ class DeliveryController extends Controller
             }
         ]
      * */
-    public function calculate(Request $request): array
+    public function calculate(Request $request)
     {
         $deliverService = new DeliveryService();
         $deliverService->setData($request->all());
 
-        return $deliverService->calculate();
+        $results = $deliverService->calculate();
+        return response()->json($results);
     }
 
     /**

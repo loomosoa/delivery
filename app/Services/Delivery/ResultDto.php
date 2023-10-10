@@ -13,6 +13,24 @@ class ResultDto
 
     protected bool $isCompanyPicked = false;
 
+    protected string $transportCompanyName = "";
+
+    /**
+     * @return string
+     */
+    public function getTransportCompanyName(): string
+    {
+        return $this->transportCompanyName;
+    }
+
+    /**
+     * @param string $transportCompanyName
+     */
+    public function setTransportCompanyName(string $transportCompanyName): void
+    {
+        $this->transportCompanyName = $transportCompanyName;
+    }
+
     /**
      * @return PackageDto
      */

@@ -13,6 +13,24 @@ class SlowDeliveryDto
 
     protected float $coefficient;
 
+    protected string $date;
+
+    /**
+     * @return string
+     */
+    public function getDate(): string
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param string $date
+     */
+    public function setDate(string $date): void
+    {
+        $this->date = $date;
+    }
+
     /**
      * @return float
      */
