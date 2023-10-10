@@ -72,15 +72,15 @@ class DeliveryService
     protected function prepareCalculationsToReturn(): void
     {
         try {
-            foreach ($this->packageCalculations as $packageResult) {
+            foreach ($this->packageCalculations as $results) {
 
                 /**
                  * @var $resultDto ResultDto
                  */
-                $resultDto = $packageResult[0];
+                $resultDto = $results[0];
                 $packageArray = $this->makePackageArray($resultDto);
 
-                foreach ($packageResult as $resultDto) {
+                foreach ($results as $resultDto) {
                     $packageArray = $this->makePackageArrayForCompanies
                     ($packageArray, $resultDto);
                 }
@@ -108,6 +108,7 @@ class DeliveryService
         $packageArray['companies'][$resultDto
             ->getTransportCompanyName()]['slowDelivery'] =
             $slowDeliveryArray;
+        
         $packageArray['companies'][$resultDto->getTransportCompanyName()]['isCompanyPicked']
             = $resultDto->isCompanyPicked();
 
