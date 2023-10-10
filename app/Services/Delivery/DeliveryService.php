@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Services\Delivery;
 
-use App\Services\Delivery\Abstracts\BaseDeliveryAdapter;
 use App\Services\Delivery\Interfaces\TransportCompanyInterface;
 use Illuminate\Support\Facades\Log;
 
@@ -13,8 +12,6 @@ class DeliveryService
     protected array $data;
 
     protected array $packagesDto = [];
-
-    protected array $resultDto = [];
 
     protected array $transportCompanies = [
         SDEKAdapter::class,
