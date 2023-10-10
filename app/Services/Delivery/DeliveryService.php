@@ -30,12 +30,7 @@ class DeliveryService
     public function calculate(): array
     {
         foreach ($this->data as $item) {
-            $packageDto = new PackageDto();
-            $packageDto->setSourceKladr($item['sourceKladr']);
-            $packageDto->setTargetKladr($item['targetKladr']);
-            $packageDto->setWeight($item['weight']);
-            $packageDto->setPickedTransportCompanyId($item['pickedTransportCompanyId']);
-
+            $packageDto = $this->makePackageDto($item);
             $this->packagesDto[] = $packageDto;
         }
 
@@ -64,8 +59,15 @@ class DeliveryService
         return $this->resultCalculations;
     }
 
-    //TODO: time before/after 18
-    //TODO: isCompanyPicked
+    protected function makePackageDto(array $item): PackageDto
+    {
+        $packageDto = new PackageDto();
+        $packageDto->setSourceKladr($item['sourceKladr']);
+        $packageDto->setTargetKladr($item['targetKladr']);
+        $packageDto->setWeight($item['weight']);
+        $packageDto->setPickedTransportCompanyId($item['pickedTransportCompanyId']);
+        return $packageDto;
+    }
 
     protected function prepareCalculationsToReturn(): void
     {
