@@ -14,7 +14,7 @@ class DeliveryController extends Controller
        Request
        #########
      *
-     *  POST /deliveries
+     *  POST /api/deliveries
      *
 
         [
