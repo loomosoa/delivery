@@ -64,6 +64,9 @@ class DeliveryService
         return $this->resultCalculations;
     }
 
+    //TODO: time before/after 18
+    //TODO: isCompanyPicked
+
     protected function prepareCalculationsToReturn(): void
     {
         try {
@@ -76,17 +79,8 @@ class DeliveryService
                 $packageArray = $this->makePackageArray($resultDto);
 
                 foreach ($packageResult as $resultDto) {
-                    $fastDeliveryArray = $this->makeFastDeliveryArray
-                    ($resultDto);
-
-                    $packageArray['companies'][$resultDto
-                        ->getTransportCompanyName()]['fastDelivery'] =
-                        $fastDeliveryArray;
-
-                    $slowDeliveryArray = $this->makeSlowDeliveryArray($resultDto);
-                    $packageArray['companies'][$resultDto
-                        ->getTransportCompanyName()]['slowDelivery'] =
-                        $slowDeliveryArray;
+                    $packageArray = $this->makePackageArrayForCompanies
+                    ($packageArray, $resultDto);
                 }
 
                 $this->resultCalculations[] = $packageArray;
@@ -96,6 +90,26 @@ class DeliveryService
             Log::debug($e->getMessage());
         }
 
+    }
+
+    protected function makePackageArrayForCompanies(array $packageArray,
+                                                    ResultDto $resultDto): array
+    {
+        $fastDeliveryArray = $this->makeFastDeliveryArray
+        ($resultDto);
+
+        $packageArray['companies'][$resultDto
+            ->getTransportCompanyName()]['fastDelivery'] =
+            $fastDeliveryArray;
+
+        $slowDeliveryArray = $this->makeSlowDeliveryArray($resultDto);
+        $packageArray['companies'][$resultDto
+            ->getTransportCompanyName()]['slowDelivery'] =
+            $slowDeliveryArray;
+        $packageArray['companies'][$resultDto->getTransportCompanyName()]['isCompanyPicked']
+            = $resultDto->isCompanyPicked();
+
+        return $packageArray;
     }
 
     protected function makeFastDeliveryArray(ResultDto $resultDto): array
